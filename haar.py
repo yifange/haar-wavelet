@@ -3,28 +3,36 @@ import math
 def haar_matrix(n):
     level = int(math.log(n, 2))
 
-    H = np.matrix([1])
-    NC = 1 / math.sqrt(2)
-    LP = np.matrix([1, 1])
-    HP = np.matrix([1, -1])
+    h = np.matrix([1])
+    nc = 1 / math.sqrt(2)
+    lp = np.matrix([1, 1])
+    hp = np.matrix([1, -1])
+    hs = [h]
     for i in range(level):
-        H = NC * np.vstack((np.kron(H, LP), np.kron(np.eye(2 ** i, 2 ** i), HP)))
-        # print "===================== i"
-        # print H
-        # print "===================== i"
-        H = np.reshape(H, (2 ** (i + 1), 2 ** (i + 1)))
-    return H
+        h = nc * np.vstack((np.kron(h, lp), np.kron(np.eye(2 ** i, 2 ** i), hp)))
+        h = np.reshape(h, (2 ** (i + 1), 2 ** (i + 1)))
+        hs.append(h)
+    coeffs = []
+    for i in reversed(range(level)):
+        h1 = hs[i + 1]
+        h2 = hs[i]
+        d = h2.shape[0]
+        h22 = np.vstack((np.hstack((h2, zeros((d, d)))), np.hstack((zeros((d, d)), eye(d)))))
+        coeffs.append(h22.I * h1)
+    return (h, coeffs)
 
+def thresholding(n):
+    pass
 if __name__ == "__main__":
-    S = np.array([[1, 2, 3, 4],
+    s = np.array([[1, 2, 3, 4],
                   [5, 6, 7, 8],
                   [8, 7, 6, 5],
                   [4, 3, 2, 1]])
-    S = np.ones((8, 8))
-    print S
-    H = haar_matrix(8)
-    print H
-    C = H * S * H.I
-    print C
-    RS = H.I * C * H
-    print RS
+    s = np.ones((8, 8))
+    # print S
+    h, coeffs = haar_matrix(8)
+    # print h
+    c = h * s * h.I
+    # PRINT c
+    rs = h.I * c * h
+    # print rs
