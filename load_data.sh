@@ -1,17 +1,26 @@
 #!/bin/bash
 #TODO change bluk size and overlap
 
-usage() { echo "Usage: $0 -f <csv_file> -a <array_name>" 1>&2; exit 1;}
+usage() { echo "Usage: $0 -f <csv_file> -a <array_name> -r <row_dimension> -c <col_dimension>" 1>&2; exit 1;}
 csv_file="" 
 array_name=""
 raw_array_name=""
-while getopts "f:a:" opt; do
+row_dim=1
+col_dim=1
+
+while getopts "f:a:r:c:" opt; do
   case $opt in
     f)
       csv_file=$OPTARG
       ;;
     a) 
       array_name=$OPTARG
+      ;;
+    r)
+      row_dim=$OPTARG
+      ;;
+    c)
+      col_dim=$OPTARG
       ;;
     \?)
       echo "Invalid option: $OPTARG" >&2
@@ -27,6 +36,9 @@ if [ -z "$csv_file" ] || [ -z "$array_name"]
 then
    usage
 fi
+
+echo "row_dim:$row_dim"
+echo "col_dim:$col_dim"
 
 raw_array_name=${array_name}_raw
 echo $csv_file
@@ -45,12 +57,12 @@ iquery -aq "create array $raw_array_name
 <i:int64,
 j:int64,
 val:double>
-[n=0:*,500000,0]"
+[n=0:$[row_dim*col_dim],1000000,0]"
 
 iquery -aq "create array $array_name
 <val:double>
-[i=0:*,500000,0,
-j=0:*,500000,0]"
+[i=0:$col_dim,1000,0,
+j=0:$row_dim,1000,0]"
 
 echo "------------"
 echo "call csv2scidb"
@@ -62,11 +74,11 @@ sleep 2;
 echo "------------"
 echo "Load raw array"
 echo "------------"
-iquery -q "LOAD $raw_array_name FROM '/tmp/load.scidb'" > /dev/null 2>&1
+iquery -q "LOAD $raw_array_name FROM '/tmp/load.scidb'" > raw.log
 
 echo "------------"
 echo "redimension_store"
 echo "------------"
-iquery -aq "redimension_store($raw_array_name,$array_name)" > /dev/null 2>&1
+iquery -aq "redimension_store($raw_array_name,$array_name)" > redimension.log
 
 
