@@ -1,5 +1,7 @@
 import numpy as np
+import numpy.linalg as la
 import math
+
 from scidbpy import interface, SciDBQueryError, SciDBArray
 
 def scidb_stuff():
@@ -16,23 +18,24 @@ def scidb_stuff():
 def haar_matrix(n):
     level = int(math.log(n, 2))
 
-    h = np.matrix([1], dtype="double")
+    h = np.array([1], dtype="double")
     nc = 1 / math.sqrt(2)
-    lp = np.matrix([1, 1], dtype="double")
-    hp = np.matrix([1, -1], dtype="double")
+    lp = np.array([1, 1], dtype="double")
+    hp = np.array([1, -1], dtype="double")
     hs = [h]
     for i in range(level):
         h = nc * np.vstack((np.kron(h, lp), np.kron(np.eye(2 ** i, 2 ** i), hp)))
         h = np.reshape(h, (2 ** (i + 1), 2 ** (i + 1)))
         hs.append(h)
-    coeffs = []
-    for i in reversed(range(level)):
-        h1 = hs[i + 1]
-        h2 = hs[i]
-        d = h2.shape[0]
-        h22 = np.vstack((np.hstack((h2, np.zeros((d, d)))), np.hstack((np.zeros((d, d)), np.eye(d)))))
-        coeffs.append(h22.I * h1)
-    return (h, coeffs)
+#    coeffs = []
+#    for i in reversed(range(level)):
+#        h1 = hs[i + 1]
+#        h2 = hs[i]
+#        d = h2.shape[0]
+#        h22 = np.vstack((np.hstack((h2, np.zeros((d, d)))), np.hstack((np.zeros((d, d)), np.eye(d)))))
+#        coeffs.append(h22.I * h1)
+#    return (h, coeffs)
+    return h
 
 def thresholding(n):
     pass
