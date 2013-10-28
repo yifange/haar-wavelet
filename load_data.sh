@@ -1,4 +1,5 @@
 #!/bin/bash
+#TODO change bluk size and overlap
 
 usage() { echo "Usage: $0 -f <csv_file> -a <array_name>" 1>&2; exit 1;}
 csv_file="" 
