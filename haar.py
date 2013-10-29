@@ -23,9 +23,14 @@ def haar_matrix_2(n):
     hp = np.array([1, -1], dtype="double")
     hs = [h]
     for i in range(level):
-        h = nc * np.hstack((np.kron(h, lp), np.kron(np.eye(2 ** i, 2 ** i), hp)))
+        lp2 = np.kron(h, lp)
+        one_eyed = np.reshape(np.eye(2 ** i), (1, (2 ** i) ** 2))[0]
+        hp2 = np.kron(one_eyed, hp)
+        print lp2
+        print hp2
+        h = nc * np.hstack((lp2, hp2))
         hs.append(h)
-    np.reshape(h, (2 ** level, 2 ** level))
+    h = np.reshape(h, (2 ** level, 2 ** level))
 #    coeffs = []
 #    for i in reversed(range(level)):
 #        h1 = hs[i + 1]
