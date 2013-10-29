@@ -1,0 +1,15 @@
+Information on Data:
+
+I have included both the source HDF5 file as well the CSV's for your reference. For your assignment you only need the csv files.
+
+smalldataset:
+sample1 - HDF5 file
+smalldataset.csv - CSV file (Matrix dimensions 4000x2500)
+
+middataset:
+sample3 - HDF5 file
+middataset.csv - CSV File (Matrix dimensions 24000x20000)
+
+bigdataset:
+sample2 - HDF5 file
+bigdataset.csv - CSV file (Matrix dimensions 48000x50000)
