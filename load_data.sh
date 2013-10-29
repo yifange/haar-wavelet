@@ -61,8 +61,8 @@ val:double>
 
 iquery -aq "create array $array_name
 <val:double>
-[i=0:$col_dim,1000,0,
-j=0:$row_dim,1000,0]"
+[i=0:$row_dim,1000,0,
+j=0:$col_dim,1000,0]"
 
 echo "------------"
 echo "call csv2scidb"
@@ -74,11 +74,11 @@ sleep 2;
 echo "------------"
 echo "Load raw array"
 echo "------------"
-iquery -q "LOAD $raw_array_name FROM '/tmp/load.scidb'" > raw.log
+iquery -q "LOAD $raw_array_name FROM '/tmp/load.scidb'" > /dev/null 2>&1
 
 echo "------------"
 echo "redimension_store"
 echo "------------"
-iquery -aq "redimension_store($raw_array_name,$array_name)" > redimension.log
+iquery -aq "redimension_store($raw_array_name,$array_name)" > /dev/null 2>&1
 
 
