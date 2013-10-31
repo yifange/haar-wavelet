@@ -47,8 +47,8 @@ echo $raw_array_name
 echo "------------"
 echo "drop array" 
 echo "------------"
-iquery -q "DROP ARRAY $raw_array_name"
-iquery -q "DROP ARRAY $array_name"
+iquery -q "DROP ARRAY $raw_array_name" > /dev/null 2>&1
+iquery -q "DROP ARRAY $array_name" > /dev/null 2>&1
 
 echo "------------"
 echo "crate array"
@@ -74,11 +74,11 @@ sleep 2;
 echo "------------"
 echo "Load raw array"
 echo "------------"
-iquery -q "LOAD $raw_array_name FROM '/tmp/load.scidb'" > /dev/null 2>&1
+iquery -nq "LOAD $raw_array_name FROM '/tmp/load.scidb'" 
 
 echo "------------"
 echo "redimension_store"
 echo "------------"
-iquery -aq "redimension_store($raw_array_name,$array_name)" > /dev/null 2>&1
+iquery -naq "redimension_store($raw_array_name,$array_name)" 
 
 

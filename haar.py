@@ -4,6 +4,37 @@ import math
 import scipy.stats.threshold
 from scidbpy import interface, SciDBQueryError, SciDBArray
 
+# from scidbpy import interface, SciDBQueryError, SciDBArray
+
+def haar_m(n):
+    rows = np.array([[1 / math.sqrt(n)] * n])
+    for i in range(n - 1):
+        Is = n / (2 ** int(math.log(i + 1, 2)))
+        before = ((i + 1)- 2 ** (int(math.log(i + 1, 2)))) * Is
+        print "before", before
+        after = n - Is - before
+        print "after", after
+        scale = math.sqrt(Is)
+        print rows
+        new_row = [[0] * before + [1 / scale] * (Is / 2) + [-1 / scale] * (Is / 2) + [0] * after]
+        print new_row
+        rows = np.append(rows, new_row, axis=0)
+    return rows
+def haar_m_to_file(n, path):
+    # rows = np.array([[1 / math.sqrt(n)] * n])
+    with open(path, "w") as f:
+        f.write(" ".join(str(i) for i in ([1 / math.sqrt(n)] * n)))
+        f.write("\n")
+        for i in range(n - 1):
+            Is = n / (2 ** int(math.log(i + 1, 2)))
+            before = ((i + 1)- 2 ** (int(math.log(i + 1, 2)))) * Is
+            after = n - Is - before
+            scale = math.sqrt(Is)
+            new_row = [0] * before + [1 / scale] * (Is / 2) + [-1 / scale] * (Is / 2) + [0] * after
+            f.write(" ".join(str(i) for i in new_row))
+            f.write("\n")
+            # rows = np.append(rows, new_row, axis=0)
+
 def scidb_stuff():
     haar = haar_matrix(8)[0]
     sdb_haar = sdb.from_array(haar)
@@ -70,15 +101,4 @@ def thresholding(n):
 
 if __name__ == "__main__":
     sdb = interface.SciDBShimInterface("http://localhost:8080")
-    s = np.array([[1, 2, 3, 4],
-                  [5, 6, 7, 8],
-                  [8, 7, 6, 5],
-                  [4, 3, 2, 1]])
-    s = np.ones((8, 8))
-    # print S
-    h, coeffs = haar_matrix(8)
-    # print h
-    c = h * s * h.I
-    # PRINT c
-    rs = h.I * c * h
-    # print rs
+
