@@ -1,7 +1,7 @@
 import numpy as np
 import numpy.linalg as la
 import math
-
+import scipy.stats.threshold
 from scidbpy import interface, SciDBQueryError, SciDBArray
 
 def scidb_stuff():
@@ -14,6 +14,8 @@ def scidb_stuff():
     # print q
     # sdb.query(q)
 
+def threshold(m, thres=0.00001):
+    return sp.stats.threshold(m, threshmin=thres)
 def haar_matrix_2(n):
     level = int(math.log(n, 2))
 
